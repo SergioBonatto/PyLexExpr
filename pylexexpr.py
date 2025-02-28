@@ -36,7 +36,7 @@ class Interpreter(object):
         self.pos = 0
         # current token instance
         self.current_token = None
-       self.current_char = self.text[0] if text else None
+        self.current_char = self.text[0] if text else None
 
     def error(self):
         current_pos = self.pos
