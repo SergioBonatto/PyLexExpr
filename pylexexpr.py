@@ -1,6 +1,6 @@
 # Token types
 #
-# EOF (end-of-file) token is used to indicate that 
+# EOF (end-of-file) token is used to indicate that
 # there is no more input left for lexical analysis
 #
 INTEGER, PLUS, MINUS, MULTIPLY, DIVIDE, EOF = "INTEGER", "PLUS", "MINUS", "MULTIPLY", "DIVIDE", "EOF"
@@ -16,7 +16,7 @@ class Token(object):
         """
             String representation of the class instance
 
-            Example: 
+            Example:
                 Token(INTEGER, 3)
                 Token(PLUS, +)
         """
@@ -36,70 +36,67 @@ class Interpreter(object):
         self.pos = 0
         # current token instance
         self.current_token = None
+       self.current_char = self.text[0] if text else None
 
     def error(self):
-        raise Exception("Error parsing input")
+        current_pos = self.pos
+        raise Exception(f"Error: Invalid character '{self.text[current_pos]}' at position {current_pos + 1}")
 
     def skipWhiteSpace(self):
         while self.pos < len(self.text) and self.text[self.pos].isspace():
-            self.pos += 1
+            self.advance()
+
+    def advance(self):
+        """
+            advance the 'pos' pointer and the 'current_char' variable
+        """
+        self.pos += 1
+        if self.pos > len(self.text) - 1:
+            self.current_char = None
+        else:
+            self.current_char = self.text[self.pos]
+
+    def _integer(self):
+        result = ""
+        while self.current_char is not None and self.current_char.isdigit():
+            result += self.current_char
+            self.advance()
+        return int(result)
 
     def get_next_token(self):
         """
             Lexical analyzer (also know as scanner or tokenizer)
 
-            This method is responsible for breaking a sentense 
+            This method is responsible for breaking a sentense
             apart into tokens. One token at a time
         """
-        text = self.text
+        while self.current_char is not None:
+            if self.current_char.isspace():
+                self.skipWhiteSpace()
+                continue
 
-        self.skipWhiteSpace()
+            if self.current_char.isdigit():
+                return Token(INTEGER, self._integer())
 
-        # is self.pos index past the end of the self.text? 
-        # if so, then return EOF token because there is no more
-        # input left to convert into tokens
-        if self.pos > len(text) - 1:
-            return Token(EOF, None)
+            if self.current_char in "+-*/":
+                if self.current_char == "+":
+                    token = Token(PLUS, self.current_char)
+                elif self.current_char == "-":
+                    token = Token(MINUS, self.current_char)
+                elif self.current_char == "*":
+                    token = Token(MULTIPLY, self.current_char)
+                else:  # self.current_char == "/"
+                    token = Token(DIVIDE, self.current_char)
+                self.advance()
+                return token
 
-        # get a character at a position self.pos and decide
-        # what token to create base on the single character
-        current_char = text[self.pos]
+            self.error()
 
-        # if the character is a digit then convert it to
-        # integer, create INTEGER token, increment self.pos
-        # index to pont to next character after the digit,
-        # and return the INTEGER token
-        
-        if current_char.isdigit():
-            token = Token(INTEGER, int(current_char))
-            self.pos += 1
-            return token
-        
-        if current_char == "+":
-            token = Token(PLUS, current_char)
-            self.pos +=1
-            return token
-
-        if current_char == "-":
-            token = Token(MINUS, current_char)
-            self.pos += 1
-            return token
-
-        if current_char == "*":
-            token = Token(MULTIPLY, current_char)
-            self.pos += 1
-            return token
-
-        if current_char == "/":
-            token = Token(DIVIDE, current_char)
-            self.pos += 1
-            return token
-
-        self.error()
+        return Token(EOF, None)
 
     def eat(self, token_type):
         # compare the current token type with the passed token
-        # type and if they match then "eat" the current token 
+        # type and if they match then "eat" the current token
         # and assign the nect token to the self.current_token,
         # otherwise raise an exception.
 
@@ -112,7 +109,7 @@ class Interpreter(object):
         """
             expr -> INTEGER OP INTEGER
         """
-        # set current token to the first token taken fron the input 
+        # set current token to the first token taken fron the input
         self.current_token = self.get_next_token()
 
         # we expect the current token to be a single-digit integer (TODO: FIXME:)
@@ -137,10 +134,10 @@ class Interpreter(object):
         right = self.current_token
         self.eat(INTEGER)
 
-        # after the above call the self.current_token is set to 
+        # after the above call the self.current_token is set to
         # EOF token
 
-        # at this point INTEGER PLUS INTEGER sequence of tokens 
+        # at this point INTEGER PLUS INTEGER sequence of tokens
         # has been successfully found and the method can just
         # return the result off adding two integers, thus
         # effectively interpreting client input
@@ -150,28 +147,23 @@ class Interpreter(object):
             result = left.value - right.value
         elif op.value == "*":
             result = left.value * right.value
-        else:
+        elif op.value == "/":
             result = left.value / right.value
+        else:
+            return print("erro")
         return result
 
 def main():
     while True:
-        try: 
+        try:
             text = input("calc> ")
-        except EOFError:
-            break
-        if not text:
-            continue
-        interpreter = Interpreter(text)
-        result = interpreter.expr()
-        print(result)
+            if not text:
+                continue
+            interpreter = Interpreter(text)
+            result = interpreter.expr()
+            print(result)
+        except Exception as e:
+            print(e)
 
 if __name__ == "__main__":
     main()
-
-
-
-
-
-
-
