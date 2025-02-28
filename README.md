@@ -1,95 +1,105 @@
-# Simple Mathematical Expression Interpreter (WIP)
+# PyLexExpr - Mathematical Expression Interpreter
 [![Python Version](https://img.shields.io/badge/python-3.7+-blue.svg)](https://python.org)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-A basic mathematical expression interpreter built in Python that can handle simple arithmetic operations. This is part of an ongoing project to create a more comprehensive interpreter.
+A robust mathematical expression interpreter implemented in Python that handles arithmetic operations. Built with extensibility and educational purposes in mind.
 
-## Current Features
+## Overview
 
-- Tokenization of mathematical expressions
-- Support for basic arithmetic operations:
-  - Addition (`+`)
-  - Subtraction (`-`)
-  - Multiplication (`*`)
-  - Division (`/`)
-- Single-digit integer processing
+PyLexExpr implements a lexer and parser for mathematical expressions, demonstrating core concepts of interpreter design. It currently supports basic arithmetic operations with plans for expansion.
+
+## Features
+
+### Core Functionality
+- Lexical analysis (tokenization)
+- Expression parsing
+- Basic arithmetic evaluation
+- Interactive REPL interface
+
+### Supported Operations
+- Basic arithmetic: `+`, `-`, `*`, `/`
+- Integer operations
 - Whitespace handling
-- Interactive calculator mode
+- Error reporting
 
-## Getting Started
+## Quick Start
 
-### Prerequisites
-
-- Python 3.7 or higher
+### Requirements
+- Python 3.7+
+- Git
 
 ### Installation
-
 ```bash
-git clone git@github.com:SergioBonatto/PyLexExpr.git
+git clone https://github.com/SergioBonatto/PyLexExpr.git
 cd PyLexExpr
 ```
 
-### Running the Calculator
-
+### Usage
+Launch the interactive calculator:
 ```bash
 python pylexexpr.py
 ```
 
-## Usage Example
-
+Example session:
 ```bash
-calc> 5+3
+calc> 5 + 3
 8
-calc> 7-2
+calc> 10 - 4
+6
+calc> 3 * 7
+21
+calc> 15 / 3
 5
-calc> 4*6
-24
-calc> 8/2
-4
 ```
 
-## Project Structure
+## Architecture
 
-```
-.
-├── calculator_handle.py    # Main interpreter implementation
-└── README.md              # Documentation
-```
+### Components
+- **Lexical Analyzer**: Converts input string into tokens
+- **Parser**: Processes token stream and builds AST
+- **Interpreter**: Evaluates the parsed expressions
 
-## Implementation Details
+### Token Types
+| Type | Description |
+|------|-------------|
+| INTEGER | Numeric values |
+| PLUS | Addition operator |
+| MINUS | Subtraction operator |
+| MULTIPLY | Multiplication operator |
+| DIVIDE | Division operator |
+| EOF | End of input marker |
 
-The interpreter consists of two main components:
+## Roadmap
 
-- **Lexical Analyzer (Tokenizer)**: Breaks input into tokens
-- **Parser**: Processes tokens and evaluates expressions
+### Planned Features
+- [ x ] Multi-digit number support
+- [ ] Parentheses handling
+- [ ] Floating-point operations
+- [ ] Operator precedence (PEMDAS)
+- [ ] Enhanced error handling
+- [ ] Complex expression support
 
-### Supported Token Types
-
-- `INTEGER`: Numeric values
-- `PLUS`: Addition operator
-- `MINUS`: Subtraction operator
-- `MULTIPLY`: Multiplication operator
-- `DIVIDE`: Division operator
-- `EOF`: End of input marker
-
-## Limitations and TODOs
-
-- [ ] Multi-digit number support
-- [ ] Parentheses support
-- [ ] Floating-point number support
-- [ ] Order of operations (PEMDAS)
-- [ ] Error handling improvements
-- [ ] Support for more complex expressions
+### Under Consideration
+- Abstract Syntax Tree visualization
+- Custom operator definition
+- Variable support
+- Function support
 
 ## Contributing
 
-This is a development project. Contributions are welcome! Please feel free to submit a Pull Request.
+Contributions are welcome! Please check our Contributing Guidelines before submitting PRs.
+
+### Development Setup
+1. Fork the repository
+2. Create a feature branch
+3. Implement your changes
+4. Submit a pull request
 
 ## License
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+Licensed under MIT - see LICENSE for details.
 
-## Acknowledgments
+## Credits
 
-- Inspired by Ruslan Spivak's "Let's Build A Simple Interpreter" series
-- Built as a learning project for understanding interpreter design
+- Inspired by Ruslan Spivak's interpreter series
+- Contributors and maintainers
