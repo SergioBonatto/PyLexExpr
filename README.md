@@ -72,7 +72,7 @@ calc> 15 / 3
 ## Roadmap
 
 ### Planned Features
-- [ x ] Multi-digit number support
+- [x] Multi-digit number support
 - [ ] Parentheses handling
 - [ ] Floating-point operations
 - [ ] Operator precedence (PEMDAS)
