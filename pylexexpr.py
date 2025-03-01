@@ -1,15 +1,11 @@
 # Token types
 #
 # EOF (end-of-file) token is used to indicate that
-# there is no more input left for lexical analysis
-#
 INTEGER, PLUS, MINUS, MULTIPLY, DIVIDE, EOF = "INTEGER", "PLUS", "MINUS", "MULTIPLY", "DIVIDE", "EOF"
 
 class Token(object):
     def __init__(self, type, value):
-        # token type: INTEGER, PLUS, "MINUS" or EOF
         self.type = type
-        # token value: 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, '+', '-' '*', '/' or None
         self.value = value
 
     def __str__(self):
@@ -56,7 +52,7 @@ class Interpreter(object):
         else:
             self.current_char = self.text[self.pos]
 
-    def _integer(self):
+    def integer(self):
         result = ""
         while self.current_char is not None and self.current_char.isdigit():
             result += self.current_char
@@ -76,7 +72,7 @@ class Interpreter(object):
                 continue
 
             if self.current_char.isdigit():
-                return Token(INTEGER, self._integer())
+                return Token(INTEGER, self.integer())
 
             if self.current_char in "+-*/":
                 if self.current_char == "+":
@@ -89,17 +85,10 @@ class Interpreter(object):
                     token = Token(DIVIDE, self.current_char)
                 self.advance()
                 return token
-
             self.error()
-
         return Token(EOF, None)
 
     def eat(self, token_type):
-        # compare the current token type with the passed token
-        # type and if they match then "eat" the current token
-        # and assign the nect token to the self.current_token,
-        # otherwise raise an exception.
-
         if self.current_token.type == token_type:
             self.current_token = self.get_next_token()
         else:
@@ -112,42 +101,29 @@ class Interpreter(object):
         # set current token to the first token taken fron the input
         self.current_token = self.get_next_token()
 
-        # we expect the current token to be a single-digit integer (TODO: FIXME:)
         left = self.current_token
         self.eat(INTEGER)
-
-        # we expect the current token to be a `+` token
-        if self.current_token.type == PLUS:
-            op = self.current_token
+        
+        op = self.current_token
+        if op.type == PLUS:
             self.eat(PLUS)
-        elif self.current_token.type == MINUS:
-            op = self.current_token
+        elif op.type == MINUS:
             self.eat(MINUS)
-        elif self.current_token.type == MULTIPLY:
-            op = self.current_token
+        elif op.type == MULTIPLY:
             self.eat(MULTIPLY)
         else:
-            op = self.current_token
             self.eat(DIVIDE)
 
-        # we expect the current token to be a single-digit integer
         right = self.current_token
         self.eat(INTEGER)
 
-        # after the above call the self.current_token is set to
-        # EOF token
-
-        # at this point INTEGER PLUS INTEGER sequence of tokens
-        # has been successfully found and the method can just
-        # return the result off adding two integers, thus
-        # effectively interpreting client input
-        if op.value == "+":
+        if op.type == PLUS:
             result = left.value + right.value
-        elif op.value == "-":
+        elif op.type == MINUS:
             result = left.value - right.value
-        elif op.value == "*":
+        elif op.type == MULTIPLY:
             result = left.value * right.value
-        elif op.value == "/":
+        elif op.type == DIVIDE:
             result = left.value / right.value
         else:
             return print("erro")
