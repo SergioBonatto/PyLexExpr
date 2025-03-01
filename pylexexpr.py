@@ -32,8 +32,9 @@ class Interpreter(object):
         self.pos = 0
         # current token instance
         self.current_token = None
-        self.current_char = self.text[0] if text else None
+        self.current_char = self.text[self.pos] 
 
+    #### Lexer Code
     def error(self):
         current_pos = self.pos
         raise Exception(f"Error: Invalid character '{self.text[current_pos]}' at position {current_pos + 1}")
@@ -94,6 +95,11 @@ class Interpreter(object):
         else:
             self.error()
 
+    def term(self):
+        token = self.current_token
+        self.eat(INTEGER)
+        return token.value
+
     def expr(self):
         """
             expr -> INTEGER OP INTEGER
@@ -101,38 +107,32 @@ class Interpreter(object):
         # set current token to the first token taken fron the input
         self.current_token = self.get_next_token()
 
-        left = self.current_token
-        self.eat(INTEGER)
-        
-        op = self.current_token
-        if op.type == PLUS:
-            self.eat(PLUS)
-        elif op.type == MINUS:
-            self.eat(MINUS)
-        elif op.type == MULTIPLY:
-            self.eat(MULTIPLY)
-        else:
-            self.eat(DIVIDE)
+        result = self.term()
 
-        right = self.current_token
-        self.eat(INTEGER)
+        while self.current_token.type in (PLUS, MINUS, MULTIPLY, DIVIDE):
+            token = self.current_token
+            if token.type == PLUS:
+                self.eat(PLUS)
+                result = result + self.term()
+            elif token.type == MINUS:
+                self.eat(MINUS)
+                result = result - self.term()
+            elif token.type == MULTIPLY:
+                self.eat(MULTIPLY)
+                result = result * self.term()
+            else:
+                self.eat(DIVIDE)
+                result = result / self.term()
 
-        if op.type == PLUS:
-            result = left.value + right.value
-        elif op.type == MINUS:
-            result = left.value - right.value
-        elif op.type == MULTIPLY:
-            result = left.value * right.value
-        elif op.type == DIVIDE:
-            result = left.value / right.value
-        else:
-            return print("erro")
         return result
 
 def main():
     while True:
         try:
-            text = input("calc> ")
+            text = input(">>>> ")
+            if text.lower() in ['exit', 'quit']:
+                print(" Goodbye!")
+                break
             if not text:
                 continue
             interpreter = Interpreter(text)
